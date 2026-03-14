@@ -254,6 +254,11 @@
       font-family: 'Bebas Neue', sans-serif;
     }
 
+    .promo .add-btn {
+      margin-top: 12px;
+      width: 100%;
+    }
+
     .contact-card {
       background: #fff;
       border-radius: var(--radius);
@@ -287,6 +292,23 @@
       align-items: center;
       margin-bottom: 8px;
       font-size: 14px;
+    }
+
+    .cart-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clear-btn {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: transparent;
+      color: #fff;
+      border-radius: 999px;
+      font-size: 11px;
+      padding: 4px 9px;
+      cursor: pointer;
+      font-weight: 700;
     }
 
     .cart-count {
@@ -378,6 +400,7 @@
       <div class="promo">
         <small>SLIDER</small>
         <h4>2 x $50</h4>
+        <button class="add-btn" id="addPromo">Agregar promo al pedido</button>
       </div>
     </section>
 
@@ -395,7 +418,10 @@
   <aside class="cart" id="cartPanel">
     <div class="cart-header">
       <strong>Tu pedido</strong>
-      <span class="cart-count" id="cartCount">0</span>
+      <div class="cart-actions">
+        <button class="clear-btn" id="clearCart">Vaciar carrito</button>
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
     </div>
     <div class="cart-items" id="cartItems">
       <p class="empty">Aún no agregas productos.</p>
@@ -435,6 +461,11 @@
     const cart = [];
     const burgersContainer = document.getElementById('burgers');
     const sidesContainer = document.getElementById('sides');
+
+    function addToCart(item) {
+      cart.push(item);
+      renderCart();
+    }
 
     function formatMXN(value) {
       return `$${value}`;
@@ -497,7 +528,7 @@
         const extrasCost = selectedExtras.reduce((acc, e) => acc + e.price, 0);
         const unitPrice = product.prices[selectedSize] + extrasCost;
 
-        cart.push({
+        addToCart({
           name: `${product.name} (${selectedSize})`,
           extras: selectedExtras.map(e => e.name),
           qty,
@@ -509,8 +540,6 @@
         setTimeout(() => card.classList.remove('bump'), 240);
         card.querySelector('[data-qty]').value = 1;
         card.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-
-        renderCart();
       });
 
       return card;
@@ -528,11 +557,10 @@
         </div>
       `;
 
-      card.querySelector('button').addEventListener('click', () => {
-        cart.push({ name: side.name, extras: [], qty: 1, unitPrice: side.price, total: side.price });
+      card.querySelector('.add-btn').addEventListener('click', () => {
+        addToCart({ name: side.name, extras: [], qty: 1, unitPrice: side.price, total: side.price });
         card.classList.add('bump');
         setTimeout(() => card.classList.remove('bump'), 240);
-        renderCart();
       });
 
       return card;
@@ -585,6 +613,24 @@
 
     document.getElementById('goToCart').addEventListener('click', () => {
       document.getElementById('cartPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    document.getElementById('addPromo').addEventListener('click', () => {
+      const promoCard = document.querySelector('.promo');
+      addToCart({
+        name: 'Promoción Slider 2 x $50',
+        extras: [],
+        qty: 1,
+        unitPrice: 50,
+        total: 50
+      });
+      promoCard.classList.add('bump');
+      setTimeout(() => promoCard.classList.remove('bump'), 240);
+    });
+
+    document.getElementById('clearCart').addEventListener('click', () => {
+      cart.length = 0;
+      renderCart();
     });
   </script>
 </body>
