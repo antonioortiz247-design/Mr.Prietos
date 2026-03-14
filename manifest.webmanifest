@@ -1,0 +1,10 @@
+{
+  "name": "Mr. Prietos Smash Burger",
+  "short_name": "Mr. Prietos",
+  "description": "Menú digital y pedidos de Mr. Prietos Smash Burger.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3f3f3",
+  "theme_color": "#111111"
+}
